@@ -21,6 +21,7 @@ What you will need to start this project:
 - An IDE or code editor
 - NodeJS, at least v8/10
 - npm or yarn
+- Vue.js devtools (recommended)
 
 ## Prerequisites
 
@@ -32,14 +33,15 @@ This project assumes you have some knowledge of the below concepts before starti
 
 ## Some things to note:
 
-- We will not be going over Vue.js extensively but instead brush over high level concepts of Vue.js and keep our focus on the
-  Commerce.js layer.
-- For the purposes of getting set up with products data to start working with, we will be providing you with demo merchant [public
-  key](https://commercejs.com/docs/sdk/concepts#authentication).
+- We will not be going over Vue.js extensively but instead brush over high level concepts of Vue.js and keep our focus
+  on the Commerce.js layer.
+- For the purposes of getting set up with products data to start working with, we will be providing you with demo
+  merchant [public key](https://commercejs.com/docs/sdk/concepts#authentication).
 - We will not be going over account or dashboard setup. Have a read
   [here](https://commercejs.com/docs/sdk/getting-started#account-setup) if you'd like to learn more about setting up a
   Chec account.
-- This application is using the CSS utility framework TailwindCSS. Because the main goal of this guide to to learn how to list products with Commerce.js, we will not be going over any styling details.
+- This application is using the CSS utility framework TailwindCSS. Because the main goal of this guide to to learn how
+  to list products with Commerce.js, we will not be going over any styling details.
 
 ## Initial setup
 
@@ -93,8 +95,8 @@ npm run serve
 
 In order to communicate with the Chec API and fetch data from the backend, we need to install the Commerce.js SDK. The
 Commerce.js SDK can be installed via CDN by including `<script type="text/javascript"
-src="https://assets.chec-cdn.com/v2/commerce.js"></script> in your `index.html` file or installed with a package
-manager (recommended):
+src="https://assets.chec-cdn.com/v2/commerce.js"></script> in your `index.html` file or installed with a package manager
+(recommended):
 
 ```bash
 yarn add @chec/commerce.js
@@ -118,8 +120,8 @@ const commerce = (typeof process.env.VUE_APP_CHEC_PUBLIC_KEY !== 'undefined')
 ```
 
 What we have done above is we first imported our `Commerce` object, then we created a new Commerce instance by passing
-in and processing our environment variable `VUE_APP_CHEC_PUBLIC_KEY` as an argument. The ternary operator first
-checks whether a public key is set at the environment variable we define and if it does, we then create our new Commerce
+in and processing our environment variable `VUE_APP_CHEC_PUBLIC_KEY` as an argument. The ternary operator first checks
+whether a public key is set at the environment variable we define and if it does, we then create our new Commerce
 instance and store it in a variable called `commerce`.
 
 ### 3. Inject `commerce` as a global plugin
@@ -170,8 +172,8 @@ export default {
 ```
 
 Before we make our first call to list out our products data, we need to declare products as an empty array in our app
-component's initial state to be able to store the returned products data. Underneath the name property, use the
-data function to declare products state:
+component's initial state to be able to store the returned products data. Underneath the name property, use the data
+function to declare products state:
 
 ```js
 data() {
@@ -216,9 +218,9 @@ created() {
 },
 ```
 
-Now go to your **network** tab in your browser in the products object, you should be able to first see in **headers**
-that the request was successful with a 200 status code, and secondly the products data json object under the **preview**
-tab. An abbreviated return data object should look like the below:
+Now either go to your Vue.js devtools to see the returned data or in your **network** tab in the browser, you should be
+able to first see in **headers** that the request was successful with a 200 status code. The products data json object
+under the **preview** tab should also have an abbreviated returned data object like the below:
 
 ```json
 [
@@ -351,13 +353,13 @@ we will use the template element to render out the product image, product name, 
 As you saw earlier in the abbreviated json, the returned products data object comes with all the property endpoints you
 need to build out a products listing view. In the code snippet above, we use our `product` prop to access the various
 property endpoints. First, we render out an image tag with the `src` value of `product.media.source`. The semicolon is a
-shortform of the v-bind directive that will dynamically parse the value of `product.media.src`, in which case is the image url.
-Followed by `product.name`, `product.description` and `product.price.formatted_with_symbol`. All these elements follow
-the same pattern of accessing the property endpoints from the product prop. One thing to note is the description tag:
-The description property is returned with paragraph tags, which is an expected behaviour. The field in which the
-description is input in the Chec dashboard is a WYSIWYG editor that interprets text as HTML. The built-in `v-html` is a
-Vue directive that will help to output the description as real HTML instead of the returned plain text string with
-paragraph tags included.
+shortform of the v-bind directive that will dynamically parse the value of `product.media.src`, in which case is the
+image url. Followed by `product.name`, `product.description` and `product.price.formatted_with_symbol`. All these
+elements follow the same pattern of accessing the property endpoints from the product prop. One thing to note is the
+description tag: The description property is returned with paragraph tags, which is an expected behaviour. The field in
+which the description is input in the Chec dashboard is a WYSIWYG editor that interprets text as HTML. The built-in
+`v-html` is a Vue directive that will help to output the description as real HTML instead of the returned plain text
+string with paragraph tags included.
 
 2. ### Create our product list component
 
@@ -460,7 +462,9 @@ returned products data as the value.
 </template>
 ```
 
-Awesome, you've just wrapped up on creating a products listing page using Commerce.js and Vue.js! This guide is the first part in a full Vue.js series. The next guide will walk you through on how to add cart functionalities to your application.
+Awesome, you've just wrapped up on creating a products listing page using Commerce.js and Vue.js! This guide is the
+first part in a full Vue.js series. The next guide will walk you through on how to add cart functionalities to your
+application.
 
 
 
