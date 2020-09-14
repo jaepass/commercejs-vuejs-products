@@ -466,6 +466,8 @@ Awesome, you've just wrapped up on creating a products listing page using Commer
 first part in a full Vue.js series. The next guide will walk you through on how to add cart functionalities to your
 application.
 
+To view the final code up until this point go [here](https://github.com/jaepass/commercejs-vuejs-products).
+
 
 
 
