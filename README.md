@@ -67,7 +67,7 @@ Change directory into your project folder:
 cd your-project-name
 ```
 
-### 3. Store the public key in an environment variable file
+### 2. Store the public key in an environment variable file
 
 Create a `.env` file at the root of your project.
 
@@ -82,7 +82,7 @@ Open up your the `.env` file and input in the environment variable key and value
 VUE_APP_CHEC_PUBLIC_KEY=pk_184625ed86f36703d7d233bcf6d519a4f9398f20048ec
 ```
 
-### 4. Start your local HTTP server and run your development environment:
+### 3. Start your local HTTP server and run your development environment:
 ```bash
 yarn serve
 # OR
@@ -148,7 +148,7 @@ application's components.
 Now that we have done our initial setup and make the `commerce` object available to be used in our application, let's
 get started with building the products listing page.
 
-1. ### Fetch our products data
+### 1. Fetch our products data
 
 One of the main resources of Chec is the [Products](https://commercejs.com/docs/sdk/products) endpoint. Commerce.js
 makes it seamless to fetch products data with its promise-based
@@ -313,7 +313,7 @@ under the **preview** tab should also have an abbreviated returned data object l
 
 Now with the product data object available, we can use the various endpoints to render out in our template.
 
-1. ### Create our product item component
+### 2. Create our product item component
 
 Because of the nature of Vue and most modern frameworks, components are a way to encapsulate a group of elements
 together to reuse as custom components throughout your application. We will be creating two components for our products,
@@ -361,7 +361,7 @@ which the description is input in the Chec dashboard is a WYSIWYG editor that in
 `v-html` is a Vue directive that will help to output the description as real HTML instead of the returned plain text
 string with paragraph tags included.
 
-2. ### Create our product list component
+### 3. Create our product list component
 
 With our single product item component created, we can now go ahead and create a products list component that will loop
 through and render out a list of product items.
@@ -467,11 +467,3 @@ first part in a full Vue.js series. The next guide will walk you through on how 
 application.
 
 To view the final code up until this point go [here](https://github.com/jaepass/commercejs-vuejs-products).
-
-
-
-
-
-
-
-
