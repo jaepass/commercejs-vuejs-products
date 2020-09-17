@@ -22,8 +22,6 @@ export default {
     /**
      * Fetch products data from Chec and stores in the products data object.
      * https://commercejs.com/docs/sdk/products
-     * 
-     * @return {object} products data object
      */
     fetchProducts() {
       this.$commerce.products.list().then((products) => {
