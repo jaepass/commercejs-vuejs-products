@@ -19,7 +19,7 @@ Commerce.js and Vue.js. Throughout this guide you will learn how to:
 What you will need to start this project:
 
 - An IDE or code editor
-- NodeJS, at least v8/10
+- NodeJS, at least v8
 - npm or yarn
 - Vue.js devtools (recommended)
 
@@ -40,8 +40,8 @@ This guide assumes you have some knowledge of the below concepts before starting
 - We will not be going over account or dashboard setup. Have a read
   [here](https://commercejs.com/docs/sdk/getting-started#account-setup) if you'd like to learn more about setting up a
   Chec account.
-- This application is using the CSS utility framework TailwindCSS. Because the main goal of this guide is to learn how
-  to list products with Commerce.js, we will not be going over any styling details.
+- This application is using the CSS utility framework [TailwindCSS](https://tailwindcss.com/). Because the main goal
+  of this guide is to learn how to list products with Commerce.js, we will not be going over any styling details.
 
 ## Initial setup
 
@@ -69,10 +69,10 @@ cd your-project-name
 
 ### 2. Store the public key in an environment variable file
 
-Create a `.env` file at the root of your project.
+Copy the `.env` file template `.env.example` at the root of your project, and call it `.env`.
 
 ```bash
-touch .env
+cp .env.example .env
 ```
 
 Open up your the `.env` file and input in the environment variable key and value:
@@ -95,7 +95,7 @@ npm run serve
 
 In order to communicate with the Chec API and fetch data from the backend, we need to install the Commerce.js SDK. The
 Commerce.js SDK can be installed via CDN by including `<script type="text/javascript"
-src="https://assets.chec-cdn.com/v2/commerce.js"></script> in your `index.html` file or installed with a package manager
+src="https://assets.chec-cdn.com/v2/commerce.js"></script>` in your `index.html` file, or installed with a package manager
 (recommended):
 
 ```bash
@@ -106,8 +106,8 @@ npm install @chec/commerce.js
 
 ### 2. Create a Commerce.js instance
 
-To have access to the `chec/commerce.js` that we have just installed, we need to create a new instance to be able to use
-it throughout our application. Open your `main.js` file and input the following in:
+To have access to the `chec/commerce.js` library that we have just installed, we need to create a new instance to be able to use
+it throughout our application. Open your `main.js` file and add the following:
 
 ```js
 // Import the Commerce object
@@ -120,27 +120,26 @@ const commerce = (typeof process.env.VUE_APP_CHEC_PUBLIC_KEY !== 'undefined')
 ```
 
 What we have done above is we first imported the `Commerce` object, then we create a new Commerce.js instance by passing
-in and processing our environment variable `VUE_APP_CHEC_PUBLIC_KEY` as an argument. The ternary operator first checks
+in and processing our environment variable `VUE_APP_CHEC_PUBLIC_KEY` as an argument. The ternary condition first checks
 whether a public key is available as an environment variable, and if it does, we can create our new Commerce instance 
 and store it in a variable called `commerce`.
 
+You might want to throw an error if the public key isn't available, since it will probably make your application unusable.
+
 ### 3. Inject `commerce` as a global plugin
 
-In order to have access to our `commerce` instance we created earlier, we want to inject it as a global plugin using the
-Vue built-in `mixin()` method. Creating commerce as a mixin object is an effective method as mixins in Vue help to
-abstract a chunk of defined logic to be consumed in your application globally.
+In order to have access to our `commerce` instance we created earlier, we want to inject it as a global property. This
+means that any of your Vue components can access the Commerce object via `this.$commerce`.
 
 ```js
-// main.js
-
 Vue.mixin({
   beforeCreate() {
-    this.$commerce = commerce
-  }
+    this.$commerce = commerce;
+  },
 });
 ```
 
-In the above code, we create a Vue mixin and pass in the `beforeCreate()` lifecycle hook. This hook will be called 
+In the above code, we assign a Vue property in the `beforeCreate()` lifecycle hook. This hook will be called 
 immediately after the Vue instance initializes and it will create the `this.$commerce` instance variable. This hook
 will be called before any local component's lifecycle hooks, making `this.$commerce` available to be consumed throughout
 our application's components.
@@ -152,18 +151,16 @@ get started with building the products listing page.
 
 ### 1. Fetch our products data
 
-One of the main resources of Chec is the [Products](https://commercejs.com/docs/sdk/products) endpoint. Commerce.js
-makes it seamless to fetch products data with its promise-based
+One of the main resources in Chec is the [Products](https://commercejs.com/docs/sdk/products) endpoint. Commerce.js
+makes it seamless to fetch product data with its promise-based
 [method](https://commercejs.com/docs/sdk/products#list-products) `commerce.products.list()`. This request would make a
-call to the `GET v1/products` API endpoint and return the products data upon a successful call. Let's open up the
-`App.vue` file and start making our first Commerce.js request.
+call to the `GET v1/products` API endpoint and return a list of product data upon a successful call. Let's open up the
+`App.js` file and start making our first Commerce.js request.
 
-First, we'll want to wipe out the code that came with creating a new Vue app and code out this file from scratch. Keep
+First, we'll want to wipe out the code that came with creating a new Vue app and write this file from scratch. Keep
 the template, and script tags intact.
 
 ```html
-<!-- App.vue -->
-
 <template>
 </template>
 
@@ -174,13 +171,11 @@ export default {
 </script>
 ```
 
-Before we make our first call to list out our products, we need to declare products as an empty array in our app
-component's initial state to be able to store the returned products data. Underneath the name property, use the data
-function to declare products state:
+Before we make our first call to list our products, we need to declare `products` as an empty array in our app
+component's initial state to be able to store the returned product data. Underneath the name property, use the data
+function to declare `products` in state:
 
 ```js
-// App.vue
-
 data() {
   return {
     products: [],
@@ -192,14 +187,10 @@ Now, lets get to making our first Commerce.js request. We will create a function
 property and make a request to the products endpoint using `commerce.products.list()` Commerce.js method.
 
 ```js
-// App.vue
-
 methods: {
   /**
    * Fetch products data from Chec and store in the products data object.
    * https://commercejs.com/docs/sdk/products
-   * 
-   * @return {object} products data object
    */
   fetchProducts() {
     this.$commerce.products.list().then((products) => {
@@ -211,23 +202,21 @@ methods: {
 },
 ```
 
-Inside the curly braces, we access `this.$commerce` and use the "products" resource to use the `list()` method. Upon a
-successful call to the Chec API products endpoint, we store `products.data` into our initial state (`this.products`).
+Inside the curly braces, we access `this.$commerce` and use the "products" resource's `list()` method. Upon a
+successful call to the Chec API products endpoint, we store `products.data` in our state (`this.products`).
 
 Of course simply creating the function does not do anything as we have yet to call this function. When the app component
 mounts to the DOM, we use the lifecycle `created()` hook to call the `fetchProducts()` function which will then return
 the products data.
 
 ```js
-// App.vue
-
 created() {
   this.fetchProducts();
 },
 ```
 
 Now either go to your Vue.js devtools to see the returned data or in your **network** tab in the browser, you should be
-able to first see in **headers** that the request was successful with a 200 status code. The products data json object
+able to first see in **headers** that the request was successful with a 200 status code. The products data JSON object
 under the **preview** tab should also have an abbreviated returned data object like the below:
 
 ```json
@@ -319,20 +308,18 @@ under the **preview** tab should also have an abbreviated returned data object l
 ]
 ```
 
-Now with the product data object available, we can use the various endpoints to render out in our template.
+Now with the product data object available, we can use it to render our templates.
 
 ### 2. Create our product item component
 
-Because of the nature of Vue and most modern frameworks, components are a way to encapsulate a group of elements
-together to reuse as custom components throughout your application. We will be creating two components for our products,
+Because of the nature of Vue and most modern JavaScript frameworks, components are a way to encapsulate a group of elements
+to reuse as custom components throughout your application. We will be creating two components for our products,
 one will be our single product item and another for the list of product items.
 
-In `src/components`, lets first create a new file and name it `ProductItem.vue`. In this component file, lets start by
-naming our component and defining a product prop in the script tag:
+In `src/components`, let's first create a new file and name it `ProductItem.vue`. In this component, let's start by
+naming our component and defining a `product` prop in the script tag:
 
 ```html
-<!-- ProductItem.vue -->
-
 <script>
 export default {
   name: 'ProductItem',
@@ -341,17 +328,15 @@ export default {
 </script>
 ```
 
-We define a product prop so that we can later pass product as a property in the `ProductItem` component instance. Props
-are custom attributes you can register to a component. Values that later get passed in to prop attributes becomes a
-property of that component instance. It is essentially a  variable that will get filled out by whatever the parent
-component sends down.
+We define a `product` prop so that we can later pass it as a property to the `ProductItem` component. Props
+are custom attributes you can register on a component. Values that later get passed in to prop attributes becomes a
+property of that component instance. It is essentially a variable that will be defined by whatever the parent
+component sends down - this may also be bound dynamically to something like Vuex, so it updates everywhere automatically.
 
-Let's now start to render out the data that was provided by our return products data object. In `ProductItem.vue`,
-we will use the template element to render out the product image, product name, product description, and product price.
+Let's now start to render out the data that was provided by our `product` data object. In `ProductItem.vue`,
+we will use the template element to render the product image, name, description, and price.
 
 ```html
-<!-- ProductItem.vue -->
-
 <template>
   <div class="product__card">
     <img class="product__image" :src="product.media.source" >
@@ -362,26 +347,28 @@ we will use the template element to render out the product image, product name, 
 </template>
 ```
 
-As you saw earlier in the abbreviated json, the returned products data object comes with all the information that you
-need to build out a products listing view. In the code snippet above, we use our `product` prop to access the various
-property endpoints. First, we render out an image tag with the `src` value of `product.media.source`. The semicolon is
-shorthand for the v-bind directive which will dynamically parse the value of `product.media.src` - the products'
-image url. Followed by `product.name`, `product.description` and `product.price.formatted_with_symbol`. All these
-elements follow the same pattern of accessing the data that's available from the product prop. One thing to note is the
-description tag: The description property is HTML. The built-in `v-html` is a Vue directive which will help to output 
-the description as real HTML instead of the returned plain text string with paragraph tags included.
+As you saw earlier in the abbreviated JSON, the returned product data object comes with all the information that you
+need to build a product listing view. In the code snippet above, we use our `product` prop to access the various
+properties. First, we render an image tag with the `src` value of `product.media.source`. The semicolon is
+shorthand for the `v-bind` directive which will dynamically bind the value of `product.media.src` to the `src` HTML
+attribute - the product's image URL. This is followed by `product.name`, `product.description` and
+`product.price.formatted_with_symbol`.
+
+All of these elements follow the same pattern of accessing the data that's available from the `product` prop. One
+thing to note is the description tag: the description property is HTML. The built-in `v-html` is a Vue directive
+which will help to output the description as real HTML instead of the returned plain text string with paragraph
+and other HTML tags included. If you don't want to do this, you can also strip the HTML tags and render it as plain
+text.
 
 ### 3. Create our product list component
 
 With our single product item component created, we can now go ahead and create a product list component which will loop
-through and render out a list of product items.
+through and render a list of product items.
 
-Once again in `src/components`, lets create another file and name it `ProductsList.vue`. Inside the script tag, we will
+Once again in `src/components`, let's create another file and name it `ProductsList.vue`. Inside the script tag, we will
 import in the `ProductItem` component and register it in the `components` of our component.
 
 ```html
-<!-- ProductsList.vue -->
-
 <script>
 import ProductItem from './ProductItem';
 
@@ -394,13 +381,10 @@ export default {
 </script>
 ```
 
-Next, we need to once again define a prop `products` to order to pass the products data down from our App parent
-component to the `ProductsList` component. We will also do a type check and prop validation by defining the default
-value as an array.
+Next, we need to define a `products` prop in order to accept the product data passed down from our `App` parent
+component. We will also do a type check and prop validation by defining the default value as an array.
 
 ```js
-// ProductsList.vue
-
 props: {
   products: {
     type: Array,
@@ -409,12 +393,10 @@ props: {
 },
 ```
 
-With our `ProductItem` component imported and registered, we will loop through each product item and render out a
+With our `ProductItem` component imported and registered, we will loop through each product item and render a
 "product item" from within the template:
 
 ```html
-<!-- ProductsList.vue -->
-
 <template>
   <div class="products">
     <ProductItem
@@ -430,12 +412,10 @@ With our `ProductItem` component imported and registered, we will loop through e
 We can use the `v-for` directive on the `ProductItem` component to loop through the products array and render that 
 component for each product.
 
-With both our products components created and abstracted away, lets now render them out fully in our app component.
-We'll import the `ProductsList` in after the opening script tag and register it in the components property.
+With both our product item and list components created and abstracted away, let's now render them in our `App` component.
+We'll import the `ProductsList` after the opening script tag and register it in the `components` property.
 
 ```html
-<!-- App.vue -->
-
 <script>
 import ProductsList from './components/ProductsList';
 
@@ -456,8 +436,6 @@ export default {
     /**
      * Fetch products data from Chec and stores in the products data object.
      * https://commercejs.com/docs/sdk/products
-     * 
-     * @return {object} products data object
      */
     fetchProducts() {
       this.$commerce.products.list().then((products) => {
@@ -471,14 +449,12 @@ export default {
 </script>
 ```
 
-Lastly in our template tags, we render out the `ProductsList` component and pass in the `products` prop attribute with
-returned products data as the value.
+Lastly in our template tags, we render the `ProductsList` component and pass in the `products` prop with
+returned product data as the value.
 
 ```html
-<!-- App.vue -->
-
 <template>
-  <ProductsList :products="products"/>
+  <ProductsList :products="products" />
 </template>
 ```
 
