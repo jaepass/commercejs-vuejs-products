@@ -131,6 +131,8 @@ Vue built-in `mixin()` method. Creating commerce as a mixin object is an effecti
 abstract a chunk of defined logic to be consumed in your application globally.
 
 ```js
+// main.js
+
 Vue.mixin({
   beforeCreate() {
     this.$commerce = commerce
@@ -154,13 +156,15 @@ One of the main resources of Chec is the [Products](https://commercejs.com/docs/
 makes it seamless to fetch products data with its promise-based
 [method](https://commercejs.com/docs/sdk/products#list-products) `commerce.products.list()`. This request would make a
 call to the `GET v1/products` API endpoint and return the products data upon a successful call. All methods in
-Commerce.js are promise-based using axios, a HTTP client library, under the hood. Let's open up the `App.js` file and
+Commerce.js are promise-based using axios, a HTTP client library, under the hood. Let's open up the `App.vue` file and
 start making our first Commerce.js request.
 
 First, we'll want to wipe out the code that came with creating a new Vue app and code out this file from scratch. Keep
 the template, and script tags in tact.
 
 ```html
+<!-- App.vue -->
+
 <template>
 </template>
 
@@ -176,6 +180,8 @@ component's initial state to be able to store the returned products data. Undern
 function to declare products state:
 
 ```js
+// App.vue
+
 data() {
   return {
     products: [],
@@ -187,6 +193,8 @@ Now, lets get to making our first Commerce.js request. We will create a function
 property and make a request to the products endpoint using `commerce.products.list()` Commerce.js method.
 
 ```js
+// App.vue
+
 methods: {
   /**
    * Fetch products data from Chec and store in the products data object.
@@ -213,6 +221,8 @@ mounts to the DOM, we use the lifecycle `created()` hook to call the `fetchProdu
 the products data.
 
 ```js
+// App.vue
+
 created() {
   this.fetchProducts();
 },
@@ -323,6 +333,8 @@ In `src/components`, lets first create a new file and name it `ProductItem.vue`.
 naming our component and defining a product prop in the script tag:
 
 ```html
+<!-- ProductItem.vue -->
+
 <script>
 export default {
   name: 'ProductItem',
@@ -340,6 +352,8 @@ Lets now start to render out the data that was provided by our return products d
 we will use the template element to render out the product image, product name, product description, and product price.
 
 ```html
+<!-- ProductItem.vue -->
+
 <template>
   <div class="product__card">
     <img class="product__image" :src="product.media.source" >
@@ -370,6 +384,8 @@ Once again in `src/components`, lets create another file and name it `ProductsLi
 import in the `ProductItem` component and also register it in the components property.
 
 ```html
+<!-- ProductsList.vue -->
+
 <script>
 import ProductItem from './ProductItem';
 
@@ -387,6 +403,8 @@ component to the `ProductsList` component. We will also do a type check and prop
 value as an array.
 
 ```js
+// ProductsList.vue
+
 props: {
   products: {
     type: Array,
@@ -399,6 +417,8 @@ With our `ProductItem` component imported and registered, we will loop through e
 products list from within the template:
 
 ```html
+<!-- ProductsList.vue -->
+
 <template>
   <div class="products">
     <ProductItem
@@ -418,6 +438,8 @@ With both our products components created and abstracted away, lets now render t
 We'll import the `ProductsList` in after the opening script tag and register it in the components property.
 
 ```html
+<!-- App.vue -->
+
 <script>
 import ProductsList from './components/ProductsList';
 
@@ -457,6 +479,8 @@ Lastly in our template tags, we render out the `ProductsList` component and pass
 returned products data as the value.
 
 ```html
+<!-- App.vue -->
+
 <template>
   <ProductsList :products="products"/>
 </template>
