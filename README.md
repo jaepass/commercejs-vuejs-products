@@ -69,10 +69,10 @@ cd your-project-name
 
 ### 2. Store the public key in an environment variable file
 
-Copy the `.env` file template `.env.example` at the root of your project, and call it `.env`.
+Create the `.env` file to store your public key.
 
 ```bash
-cp .env.example .env
+touch .env
 ```
 
 Open up your the `.env` file and input in the environment variable key and value:
